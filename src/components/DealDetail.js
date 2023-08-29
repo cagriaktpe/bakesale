@@ -1,40 +1,38 @@
 import React from 'react';
 
-import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  Touchable,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, StyleSheet, View, Image, SafeAreaView} from 'react-native';
 import PropTypes from 'prop-types';
 import {priceDisplay} from '../util';
 
-class DealItem extends React.Component {
+class DealDetail extends React.Component {
   static propTypes = {
-    deal: PropTypes.object.isRequired,
-    onPress: PropTypes.func.isRequired,
+    initialDealData: PropTypes.object.isRequired,
+    onBack: PropTypes.func.isRequired,
   };
 
-  handlePress = () => {
-    this.props.onPress(this.props.deal.key);
+  state = {
+    deal: this.props.initialDealData,
   };
 
   render() {
     return (
-      <TouchableOpacity style={styles.deal} onPress={this.handlePress}>
-        <Image source={{uri: this.props.deal.media[0]}} style={styles.image} />
-        <View style={styles.info}>
-          <Text style={styles.title}>{this.props.deal.title}</Text>
-          <View style={styles.footer}>
-            <Text style={styles.cause}>{this.props.deal.cause.name}</Text>
-            <Text style={styles.price}>
-              {priceDisplay(this.props.deal.price)}
-            </Text>
+      <SafeAreaView style={styles.safearea}>
+        <View style={styles.deal}>
+          <Image
+            source={{uri: this.state.deal.media[0]}}
+            style={styles.image}
+          />
+          <View style={styles.info}>
+            <Text style={styles.title}>{this.state.deal.title}</Text>
+            <View style={styles.footer}>
+              <Text style={styles.cause}>{this.state.deal.cause.name}</Text>
+              <Text style={styles.price}>
+                {priceDisplay(this.state.deal.price)}
+              </Text>
+            </View>
           </View>
         </View>
-      </TouchableOpacity>
+      </SafeAreaView>
     );
   }
 }
@@ -42,7 +40,6 @@ class DealItem extends React.Component {
 const styles = StyleSheet.create({
   deal: {
     marginHorizontal: 12,
-    marginTop: 12,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: {width: 0, height: 0},
@@ -79,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DealItem;
+export default DealDetail;
