@@ -1,7 +1,8 @@
 import React from 'react';
 
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
+import DealItem from './DealItem';
 
 class DealList extends React.Component {
   static propTypes = {
@@ -12,7 +13,7 @@ class DealList extends React.Component {
       <View style={styles.list}>
         <FlatList
           data={this.props.deals}
-          renderItem={({item}) => <Text>{item.title}</Text>}
+          renderItem={({item}) => <DealItem deal={item} />}
         />
       </View>
     );
