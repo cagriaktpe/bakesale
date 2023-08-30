@@ -25,8 +25,10 @@ class DealDetail extends React.Component {
   render() {
     return (
       <View>
-        <View style={styles.back}>
-          <Text onPress={this.props.onBack}>Back</Text>
+        <View>
+          <Text style={styles.backLink} onPress={this.props.onBack}>
+            Back
+          </Text>
         </View>
         <View style={styles.deal}>
           <Image
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
   },
-  back: {
+  backLink: {
     marginBottom: 5,
     color: '#22f',
     marginLeft: 10,

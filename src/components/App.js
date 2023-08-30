@@ -1,12 +1,21 @@
+// system imports
 import React from 'react';
+
+// react-native imports
 import {SafeAreaView, Text, StyleSheet, View} from 'react-native';
+
+// third-party imports
 import ajax from '../ajax';
+
+// components
 import DealList from './DealList';
 import DealDetail from './DealDetail';
+import SearchBar from './SearchBar';
 
 class App extends React.Component {
   state = {
     deals: [],
+    dealsFromSearch: [],
     currentDealId: null,
   };
 
@@ -31,6 +40,24 @@ class App extends React.Component {
     return this.state.deals.find(deal => deal.key === this.state.currentDealId);
   };
 
+  searchDeals = async searchTerm => {
+    let dealsFromSearch = [];
+    if (searchTerm) {
+      dealsFromSearch = await ajax.fetchDealSearchResults(searchTerm);
+    }
+    this.setState({dealsFromSearch});
+  };
+
+  clearSearch = () => {
+    this.setState({dealsFromSearch: []});
+  };
+
+  dealsToDisplay = () => {
+    return this.state.dealsFromSearch.length > 0
+      ? this.state.dealsFromSearch
+      : this.state.deals;
+  };
+
   render() {
     if (this.state.currentDealId) {
       return (
@@ -42,13 +69,20 @@ class App extends React.Component {
         </SafeAreaView>
       );
     }
-    if (this.state.deals.length > 0) {
+    if (this.dealsToDisplay().length > 0) {
       return (
         <SafeAreaView style={styles.safearea}>
-          <DealList
-            deals={this.state.deals}
-            onItemPress={this.setCurrentDeal}
+          <SearchBar
+            searchDeals={this.searchDeals}
+            initialSearchTerm={''}
+            clearSearch={this.clearSearch}
           />
+          <View style={styles.container}>
+            <DealList
+              deals={this.dealsToDisplay()}
+              onItemPress={this.setCurrentDeal}
+            />
+          </View>
         </SafeAreaView>
       );
     }
