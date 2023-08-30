@@ -24,7 +24,7 @@ class DealDetail extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.safearea}>
+      <View>
         <View style={styles.back}>
           <Text onPress={this.props.onBack}>Back</Text>
         </View>
@@ -55,7 +55,7 @@ class DealDetail extends React.Component {
             <Text>{this.state.deal.description}</Text>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 }

@@ -21,6 +21,12 @@ class App extends React.Component {
     });
   };
 
+  unsetCurrentDeal = () => {
+    this.setState({
+      currentDealId: null,
+    });
+  };
+
   currentDeal = () => {
     return this.state.deals.find(deal => deal.key === this.state.currentDealId);
   };
@@ -28,15 +34,22 @@ class App extends React.Component {
   render() {
     if (this.state.currentDealId) {
       return (
-        <DealDetail
-          initialDealData={this.currentDeal()}
-          onBack={this.unsetCurrentDeal}
-        />
+        <SafeAreaView style={styles.safearea}>
+          <DealDetail
+            initialDealData={this.currentDeal()}
+            onBack={this.unsetCurrentDeal}
+          />
+        </SafeAreaView>
       );
     }
     if (this.state.deals.length > 0) {
       return (
-        <DealList deals={this.state.deals} onItemPress={this.setCurrentDeal} />
+        <SafeAreaView style={styles.safearea}>
+          <DealList
+            deals={this.state.deals}
+            onItemPress={this.setCurrentDeal}
+          />
+        </SafeAreaView>
       );
     }
     return (
@@ -52,6 +65,7 @@ class App extends React.Component {
 const styles = StyleSheet.create({
   safearea: {
     flex: 1,
+    backgroundColor: '#eee',
   },
   container: {
     flex: 1,
