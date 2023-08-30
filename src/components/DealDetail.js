@@ -3,6 +3,7 @@ import React from 'react';
 import {Text, StyleSheet, View, Image, SafeAreaView} from 'react-native';
 import PropTypes from 'prop-types';
 import {priceDisplay} from '../util';
+import ajax from '../ajax';
 
 class DealDetail extends React.Component {
   static propTypes = {
@@ -14,9 +15,19 @@ class DealDetail extends React.Component {
     deal: this.props.initialDealData,
   };
 
+  async componentDidMount() {
+    const fullDeal = await ajax.fetchDealDetail(this.state.deal.key);
+    this.setState({
+      deal: fullDeal,
+    });
+  }
+
   render() {
     return (
       <SafeAreaView style={styles.safearea}>
+        <View style={styles.back}>
+          <Text onPress={this.props.onBack}>Back</Text>
+        </View>
         <View style={styles.deal}>
           <Image
             source={{uri: this.state.deal.media[0]}}
@@ -31,6 +42,18 @@ class DealDetail extends React.Component {
               </Text>
             </View>
           </View>
+          {this.state.deal.user && (
+            <View style={styles.user}>
+              <Image
+                source={{uri: this.state.deal.user.avatar}}
+                style={styles.avatar}
+              />
+              <Text>{this.state.deal.user.name}</Text>
+            </View>
+          )}
+          <View style={styles.description}>
+            <Text>{this.state.deal.description}</Text>
+          </View>
         </View>
       </SafeAreaView>
     );
@@ -38,8 +61,13 @@ class DealDetail extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  safearea: {
+    flex: 1,
+    marginTop: 40,
+  },
   deal: {
     marginHorizontal: 12,
+    marginTop: 12,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: {width: 0, height: 0},
@@ -73,6 +101,26 @@ const styles = StyleSheet.create({
   price: {
     flex: 1,
     textAlign: 'right',
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+  },
+  user: {
+    alignItems: 'center',
+  },
+  description: {
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    margin: 10,
+    padding: 10,
+  },
+  back: {
+    marginBottom: 5,
+    color: '#22f',
+    marginLeft: 10,
+    fontSize: 20,
   },
 });
 
