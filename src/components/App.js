@@ -2,7 +2,14 @@
 import React from 'react';
 
 // react-native imports
-import {SafeAreaView, Text, StyleSheet, View, Animated} from 'react-native';
+import {
+  SafeAreaView,
+  Text,
+  StyleSheet,
+  View,
+  Animated,
+  Dimensions,
+} from 'react-native';
 
 // third-party imports
 import ajax from '../ajax';
@@ -22,8 +29,10 @@ class App extends React.Component {
   };
 
   animeTitle = (direction = 1) => {
-    Animated.spring(this.titleXPos, {
-      toValue: direction * 100,
+    const width = Dimensions.get('window').width - 150;
+    Animated.timing(this.titleXPos, {
+      toValue: direction * (width / 2 - 40),
+      duration: 1000,
     }).start(({finished}) => {
       if (finished) {
         this.animeTitle(-1 * direction);
@@ -33,9 +42,8 @@ class App extends React.Component {
 
   async componentDidMount() {
     this.animeTitle();
-
-    //const deals = await ajax.fetchInitialDeals();
-    //this.setState({deals});
+    const deals = await ajax.fetchInitialDeals();
+    this.setState({deals});
   }
 
   setCurrentDeal = dealId => {
