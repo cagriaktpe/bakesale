@@ -2,7 +2,7 @@
 import React from 'react';
 
 // react-native imports
-import {SafeAreaView, Text, StyleSheet, View} from 'react-native';
+import {SafeAreaView, Text, StyleSheet, View, Animated} from 'react-native';
 
 // third-party imports
 import ajax from '../ajax';
@@ -13,15 +13,29 @@ import DealDetail from './DealDetail';
 import SearchBar from './SearchBar';
 
 class App extends React.Component {
+  titleXPos = new Animated.Value(0);
+
   state = {
     deals: [],
     dealsFromSearch: [],
     currentDealId: null,
   };
 
+  animeTitle = (direction = 1) => {
+    Animated.spring(this.titleXPos, {
+      toValue: direction * 100,
+    }).start(({finished}) => {
+      if (finished) {
+        this.animeTitle(-1 * direction);
+      }
+    });
+  };
+
   async componentDidMount() {
-    const deals = await ajax.fetchInitialDeals();
-    this.setState({deals});
+    this.animeTitle();
+
+    //const deals = await ajax.fetchInitialDeals();
+    //this.setState({deals});
   }
 
   setCurrentDeal = dealId => {
@@ -88,9 +102,9 @@ class App extends React.Component {
     }
     return (
       <SafeAreaView style={styles.safearea}>
-        <View style={styles.container}>
+        <Animated.View style={[{left: this.titleXPos}, styles.container]}>
           <Text style={styles.header}>Bakesale</Text>
-        </View>
+        </Animated.View>
       </SafeAreaView>
     );
   }
