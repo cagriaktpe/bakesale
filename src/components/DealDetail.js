@@ -5,9 +5,10 @@ import {
   StyleSheet,
   View,
   Image,
-  SafeAreaView,
+  Button,
   PanResponder,
   Animated,
+  Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {priceDisplay} from '../util';
@@ -55,6 +56,11 @@ class DealDetail extends React.Component {
         }).start();
       },
     );
+  };
+
+  openDealUrl = () => {
+    this.props.onBack();
+    Linking.openURL(this.state.deal.url);
   };
 
   static propTypes = {
@@ -109,6 +115,7 @@ class DealDetail extends React.Component {
           <View style={styles.description}>
             <Text>{this.state.deal.description}</Text>
           </View>
+          <Button title="Buy this deal!" onPress={this.openDealUrl} />
         </View>
       </View>
     );
