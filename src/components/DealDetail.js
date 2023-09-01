@@ -28,6 +28,10 @@ class DealDetail extends React.Component {
           toValue: direction * 500,
           duration: 250,
         }).start(() => this.handleSwipe(-1 * direction));
+      } else {
+        Animated.spring(this.imageXPos, {
+          toValue: 0,
+        }).start();
       }
     },
   });
