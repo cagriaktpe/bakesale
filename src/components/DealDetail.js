@@ -14,15 +14,44 @@ import {priceDisplay} from '../util';
 import ajax from '../ajax';
 
 class DealDetail extends React.Component {
+  imageXPos = new Animated.Value(0);
   imagePanResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderMove: (evt, gs) => {
-      console.log('moving', gs.dx);
+      this.imageXPos.setValue(gs.dx);
     },
     onPanResponderRelease: (evt, gs) => {
-      console.log('released', gs.dx);
+      if (Math.abs(gs.dx) > 150) {
+        const direction = Math.sign(gs.dx);
+        // -1 for left, 1 for right
+        Animated.timing(this.imageXPos, {
+          toValue: direction * 500,
+          duration: 250,
+        }).start(() => this.handleSwipe(-1 * direction));
+      }
     },
   });
+
+  handleSwipe = indexDirection => {
+    if (!this.state.deal.media[this.state.imageIndex + indexDirection]) {
+      Animated.spring(this.imageXPos, {
+        toValue: 0,
+      }).start();
+      return;
+    }
+    this.setState(
+      prevState => ({
+        imageIndex: prevState.imageIndex + indexDirection,
+      }),
+      () => {
+        // Next image animation
+        this.imageXPos.setValue(indexDirection * 500);
+        Animated.spring(this.imageXPos, {
+          toValue: 0,
+        }).start();
+      },
+    );
+  };
 
   static propTypes = {
     initialDealData: PropTypes.object.isRequired,
@@ -50,10 +79,10 @@ class DealDetail extends React.Component {
           </Text>
         </View>
         <View style={styles.deal}>
-          <Image
+          <Animated.Image
             {...this.imagePanResponder.panHandlers}
             source={{uri: this.state.deal.media[this.state.imageIndex]}}
-            style={styles.image}
+            style={[{left: this.imageXPos}, styles.image]}
           />
           <View style={styles.info}>
             <Text style={styles.title}>{this.state.deal.title}</Text>
