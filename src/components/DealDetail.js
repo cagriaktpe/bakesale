@@ -1,11 +1,29 @@
 import React from 'react';
 
-import {Text, StyleSheet, View, Image, SafeAreaView} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Image,
+  SafeAreaView,
+  PanResponder,
+  Animated,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import {priceDisplay} from '../util';
 import ajax from '../ajax';
 
 class DealDetail extends React.Component {
+  imagePanResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderMove: (evt, gs) => {
+      console.log('moving', gs.dx);
+    },
+    onPanResponderRelease: (evt, gs) => {
+      console.log('released', gs.dx);
+    },
+  });
+
   static propTypes = {
     initialDealData: PropTypes.object.isRequired,
     onBack: PropTypes.func.isRequired,
@@ -13,6 +31,7 @@ class DealDetail extends React.Component {
 
   state = {
     deal: this.props.initialDealData,
+    imageIndex: 0,
   };
 
   async componentDidMount() {
@@ -32,7 +51,8 @@ class DealDetail extends React.Component {
         </View>
         <View style={styles.deal}>
           <Image
-            source={{uri: this.state.deal.media[0]}}
+            {...this.imagePanResponder.panHandlers}
+            source={{uri: this.state.deal.media[this.state.imageIndex]}}
             style={styles.image}
           />
           <View style={styles.info}>
